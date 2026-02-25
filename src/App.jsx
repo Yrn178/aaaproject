@@ -4,13 +4,17 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import Mycompanent from './components/Mycompanent.jsx'
 import Counter from './components/counter.jsx'
+import Inputer from './components/Inputer.jsx'
+import TaskList from './components/TasksList.jsx'
 
 function App({name, age}) {
-  const [count, setCount] = useState(0)
+  name = "Guard";
   return (
     <>
-      <Mycompanent name={'Guard'} age={15}></Mycompanent>
+      <Mycompanent name={name} age={15}></Mycompanent>
       <Counter></Counter>
+      <Inputer></Inputer>
+      <TaskList></TaskList>
     </>
   )
 }
