@@ -6,7 +6,6 @@ import Mycompanent from './components/Mycompanent.jsx'
 import Counter from './components/counter.jsx'
 import Inputer from './components/Inputer.jsx'
 import TaskList from './components/TasksList.jsx'
-
 function App({name, age}) {
   name = "Guard";
   return (

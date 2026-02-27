@@ -19,6 +19,15 @@ export default function TaskList() {
             [index]: !checkedTasks[index]
         });
     }
+    const handleClick = (index) => {
+        const newText = prompt("введите значение", tasks[index]);
+        if (newText !== null) {
+            const updatedTasks = [...tasks];
+            updatedTasks[index] = newText;
+            setTasks(updatedTasks);
+        }
+    }
+
     return (
         <>
             <form onSubmit={addTask}>
@@ -38,7 +47,10 @@ export default function TaskList() {
                             checked={checkedTasks[i] || false}
                             onChange={() => toggleCheck(i)}
                         />
-                        <span style={{textDecoration: checkedTasks[i] ? "line-through" : "none"}}>
+                        <span 
+                            style={{textDecoration: checkedTasks[i] ? "line-through" : "none"}}
+                            onClick={() => handleClick(i)}
+                        >
                             {task}
                         </span>
                     </li>
@@ -47,4 +59,3 @@ export default function TaskList() {
         </>
     );
 }
-
