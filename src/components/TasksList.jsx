@@ -1,57 +1,54 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 export default function TaskList() {
     const [tasks, setTasks] = useState([]);
-    const [checkedTasks, setCheckedTasks] = useState({});
     const [taskInput, setTaskInput] = useState("");
     const addTask = (e) => {
         e.preventDefault();
         if (taskInput == "") return;
-        setTasks([...tasks, taskInput]);
-        setCheckedTasks({...checkedTasks, [tasks.length]: false});
+        setTasks([...tasks, {task: taskInput, id: uuidv4(), status: false}]);
         setTaskInput("");
     };
-    const deleteTask = (e) => {
-        setTasks([...tasks].slice(0, -1));
+    const deleteTask = (id) => {
+        setTasks(tasks.filter((item) => item.id != id));
     }
-    const toggleCheck = (index) => {
-        setCheckedTasks({
-            ...checkedTasks,
-            [index]: !checkedTasks[index]
-        });
+    const toggleCheck = (id) => {
+        setTasks(tasks.map((item) => item.id == id ? {...item, status: !item.status} : item))
     }
-    const handleClick = (index) => {
-        const newText = prompt("введите значение", tasks[index]);
+    const handleClick = (id) => {
+        const newText = prompt("введите значение");
         if (newText !== null) {
-            const updatedTasks = [...tasks];
-            updatedTasks[index] = newText;
-            setTasks(updatedTasks);
+            setTasks(tasks.map(task => 
+            task.id === id ? {...task, task: newText} : task
+        ));
         }
     }
 
     return (
         <>
             <form onSubmit={addTask}>
-                <input 
+                <input
                     type="text" 
                     value={taskInput} 
                     onChange={(e) => setTaskInput(e.target.value)}
                 />
                 <button type="submit">add</button>
-                <button onClick={deleteTask}>delete</button>
             </form>
             <ul>
                 {tasks.map((task, i)=> (
                     <li key={i}>
+                        <button onClick={() => deleteTask(task.id)}>delete</button>
                         <input 
                             type="checkbox"
-                            checked={checkedTasks[i] || false}
-                            onChange={() => toggleCheck(i)}
+                            checked={task.status}
+                            onChange={() => toggleCheck(task.id)}
                         />
+                        
                         <span 
-                            style={{textDecoration: checkedTasks[i] ? "line-through" : "none"}}
+                            style={{textDecoration: task.status ? "line-through" : "none"}}
                             onClick={() => handleClick(i)}
                         >
-                            {task}
+                            {task.task}
                         </span>
                     </li>
                 ))}
