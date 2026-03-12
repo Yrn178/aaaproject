@@ -3,10 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 export default function TaskList() {
     const [tasks, setTasks] = useState([]);
     const [taskInput, setTaskInput] = useState("");
+    const [addDeadline, setAddDeadline] = useState(true)
     const addTask = (e) => {
         e.preventDefault();
         if (taskInput == "") return;
-        setTasks([...tasks, {task: taskInput, id: uuidv4(), status: false}]);
+        setTasks([...tasks, {task: taskInput, id: uuidv4(), status: false, setDeadline: null}]);
         setTaskInput("");
     };
     const deleteTask = (id) => {
@@ -24,6 +25,7 @@ export default function TaskList() {
         }
     }
 
+
     return (
         <>
             <form onSubmit={addTask}>
@@ -33,6 +35,8 @@ export default function TaskList() {
                     onChange={(e) => setTaskInput(e.target.value)}
                 />
                 <button type="submit">add</button>
+                <input type="date"/>
+
             </form>
             <ul>
                 {tasks.map((task, i)=> (
@@ -43,16 +47,39 @@ export default function TaskList() {
                             checked={task.status}
                             onChange={() => toggleCheck(task.id)}
                         />
-                        
                         <span 
                             style={{textDecoration: task.status ? "line-through" : "none"}}
                             onClick={() => handleClick(i)}
                         >
                             {task.task}
                         </span>
+
                     </li>
                 ))}
             </ul>
         </>
     );
 }
+
+
+
+// Полезное (то что может понадобится потом)
+
+
+//  логика дедлайнов
+    // const deadline = (id) => {
+    //     setTasks(tasks.map((item) => item.id == id ? {...item, deadline: !item.deadline} : item))
+    // } 
+
+
+// дедлайны
+{/* <input
+type="checkbox"
+checked={task.deadline}
+onChange={() => deadline(task.id)}
+/>
+{task.deadline && (
+<input
+type="date"
+/>
+)} */}
