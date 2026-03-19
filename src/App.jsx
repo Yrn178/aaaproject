@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Mycompanent from './components/Mycompanent.jsx'
 import Counter from './components/counter.jsx'
@@ -10,9 +8,9 @@ function App({name, age}) {
   name = "Guard";
   return (
     <>
-      <Mycompanent name={name} age={15}></Mycompanent>
-      <Counter></Counter>
-      <Inputer></Inputer>
+      {/* <Mycompanent name={name} age={15}></Mycompanent> */}
+      {/* <Counter></Counter> */}
+      {/* <Inputer></Inputer> */}
       <TaskList></TaskList>
     </>
   )
