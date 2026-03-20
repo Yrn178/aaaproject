@@ -15,20 +15,22 @@ export default function TaskList() {
     const [editInput, setEditInput] = useState("");
     const [editDeadline, setEditDeadline] = useState("");
     const [editTag, setEditTag] = useState(null);
+    const [sortAlphabetically, setSortAlphabetically] = useState(false);
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('data') || '{}');
         setTasks(saved.tasks || []);
         setTags(saved.tags || []);
         if (saved.theme) setTheme(saved.theme);
+        if (saved.sortAlphabetically !== undefined) setSortAlphabetically(saved.sortAlphabetically);
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('data', JSON.stringify({ tasks, tags, theme }));
+        localStorage.setItem('data', JSON.stringify({ tasks, tags, theme, sortAlphabetically }));
         document.body.style.cssText = theme === 'light' 
             ? 'background:#fff;color:#333;margin:0;min-height:100vh' 
             : 'background:#1a1a1a;color:#fff;margin:0;min-height:100vh';
-    }, [tasks, tags, theme]);
+    }, [tasks, tags, theme, sortAlphabetically]);
 
     const addTask = (e) => {
         e.preventDefault();
@@ -117,28 +119,50 @@ export default function TaskList() {
         }
     }[theme];
 
-    const filteredTasks = tasks.filter(task => 
-        task.task.toLowerCase().includes(searchQuery.toLowerCase()) && 
-        (!selectedTag || task.tags?.some(t => t.id === selectedTag.id))
-    );
+    const filteredTasks = tasks
+        .filter(task => 
+            task.task.toLowerCase().includes(searchQuery.toLowerCase()) && 
+            (!selectedTag || task.tags?.some(t => t.id === selectedTag.id))
+        )
+        .sort((a, b) => {
+            if (sortAlphabetically) {
+                return a.task.localeCompare(b.task, 'ru');
+            }
+            return 0;
+        });
 
     return (
         <div style={{ maxWidth: '900px', margin: '20px auto', padding: '20px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                 <h1 style={{ margin: 0, color: themeStyles.text }}>Список задач</h1>
-                <button 
-                    onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} 
-                    style={{ 
-                        padding: '8px 16px', 
-                        background: themeStyles.btn, 
-                        border: `1px solid ${themeStyles.border}`,
-                        color: themeStyles.text,
-                        cursor: 'pointer',
-                        borderRadius: '4px'
-                    }}
-                >
-                    {theme === 'light' ? 'Темная тема' : 'Светлая тема'}
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                        onClick={() => setSortAlphabetically(!sortAlphabetically)} 
+                        style={{ 
+                            padding: '8px 16px', 
+                            background: sortAlphabetically ? '#4CAF50' : themeStyles.btn, 
+                            border: `1px solid ${themeStyles.border}`,
+                            color: sortAlphabetically ? 'white' : themeStyles.text,
+                            cursor: 'pointer',
+                            borderRadius: '4px'
+                        }}
+                    >
+                        Sort {sortAlphabetically ? '✓' : ''}
+                    </button>
+                    <button 
+                        onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')} 
+                        style={{ 
+                            padding: '8px 16px', 
+                            background: themeStyles.btn, 
+                            border: `1px solid ${themeStyles.border}`,
+                            color: themeStyles.text,
+                            cursor: 'pointer',
+                            borderRadius: '4px'
+                        }}
+                    >
+                        {theme === 'light' ? 'Темная тема' : 'Светлая тема'}
+                    </button>
+                </div>
             </div>
 
             <input 
